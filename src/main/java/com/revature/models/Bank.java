@@ -8,6 +8,7 @@ public class Bank {
 
     private List<Account> pendingAccs = new ArrayList<>();
     private List<Account> approvedAccs = new ArrayList<>();
+    private List<Customer> bankCustomers = new ArrayList<>();
     private HashMap<String, User> bankUsers = new HashMap<>();
 
     public Bank() {}
@@ -63,8 +64,18 @@ public class Bank {
     }
 
     public void addBankUser(String username, User user) {
+        if(user.getClass().getSimpleName().equals("Customer")) {
+            this.bankCustomers.add((Customer) user);
+        }
         this.bankUsers.put(username, user);
     }
-    
 
+    public List<Customer> getBankCustomers() {
+        return bankCustomers;
+    }
+
+    public void setBankCustomers(List<Customer> bankCustomers) {
+        this.bankCustomers = bankCustomers;
+    }
+    
 }
