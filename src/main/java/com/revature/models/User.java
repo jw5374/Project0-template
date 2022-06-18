@@ -1,9 +1,9 @@
 package com.revature.models;
 
 public abstract class User {
+
     private String username;
     private String password;
-    private Account[] openAccounts;
 
     public User(String username, String password) {
         this.username = username;
@@ -25,14 +25,5 @@ public abstract class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public Account[] getOpenAccounts() {
-        return openAccounts;
-    }
-
-    public void setOpenAccounts(Account... openAccounts) {
-        this.openAccounts = openAccounts;
-    }
-    
     
 }
