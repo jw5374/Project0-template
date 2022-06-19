@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.revature.utils.UserChecker;
+
 public class Bank {
 
     private List<Account> pendingAccs = new ArrayList<>();
@@ -66,11 +68,16 @@ public class Bank {
         return bankUsers;
     }
 
+    public User getBankUser(String username) {
+        return bankUsers.get(username);
+    }
+
     public void setBankUsers(HashMap<String, User> bankUsers) {
         this.bankUsers = bankUsers;
     }
 
     public void addBankUser(String username, User user) {
+        UserChecker.checkUsername(username, this.bankUsers);
         if(user.getClass().getSimpleName().equals("Customer")) {
             this.bankCustomers.add((Customer) user);
         }
@@ -81,8 +88,18 @@ public class Bank {
         return bankCustomers;
     }
 
+    public Customer getBankCustomer(int index) {
+        return bankCustomers.get(index);
+    }
+
     public void setBankCustomers(List<Customer> bankCustomers) {
         this.bankCustomers = bankCustomers;
+    }
+
+    @Override
+    public String toString() {
+        return "Bank [approvedAccs=" + approvedAccs + ", bankCustomers=" + bankCustomers + ", bankUsers=" + bankUsers
+                + ", pendingAccs=" + pendingAccs + "]";
     }
     
 }
