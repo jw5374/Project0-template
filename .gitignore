@@ -1,0 +1,6 @@
+target/site
+target/surefire-reports
+target/maven-archiver
+target/maven-status
+*.exec
+*.jar

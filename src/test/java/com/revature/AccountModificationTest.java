@@ -10,7 +10,7 @@ import com.revature.models.Admin;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
 
-public class AccountModificationTests extends TestBankFuncsSetup {
+public class AccountModificationTest extends TestBankFuncsSetup {
     
     @Test
     public void accountInitializeWithBalance() {

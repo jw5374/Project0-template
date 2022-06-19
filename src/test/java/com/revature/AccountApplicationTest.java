@@ -8,7 +8,7 @@ import com.revature.models.Admin;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
 
-public class AccountApplicationTests extends TestBankFuncsSetup {
+public class AccountApplicationTest extends TestBankFuncsSetup {
     
     @Test
     public void customerApplyForAccount() {

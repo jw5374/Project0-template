@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import org.junit.Assert;
 
-public class InitializationTests extends TestBankFuncsSetup {
+public class InitializationTest extends TestBankFuncsSetup {
 
     @Test
     public void initializedUsersTest() {

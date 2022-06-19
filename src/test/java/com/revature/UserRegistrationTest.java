@@ -7,7 +7,7 @@ import com.revature.exceptions.UserAlreadyExistsException;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
 
-public class UserRegistrationTests extends TestBankFuncsSetup {
+public class UserRegistrationTest extends TestBankFuncsSetup {
     
     @Test
     public void registerUserCustomer() {
