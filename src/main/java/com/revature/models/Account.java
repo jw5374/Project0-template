@@ -1,5 +1,8 @@
 package com.revature.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.revature.utils.FundChecker;
 
 public class Account {
@@ -8,6 +11,7 @@ public class Account {
     private int id;
     private boolean isJoint;
     private double balance;
+    private List<User> attachedUsers = new ArrayList<>();
 
     public Account() {
         this.isJoint = false;
@@ -16,10 +20,27 @@ public class Account {
         idCounter++;
     }
 
+    public Account(User user) {
+        this.isJoint = false;
+        this.balance = 0.0;
+        this.attachedUsers.add(user);
+        this.id = idCounter;
+        idCounter++;
+    }
+
     public Account(boolean isJoint, double balance) {
         FundChecker.checkFunds(balance);
         this.isJoint = isJoint;
         this.balance = balance;
+        this.id = idCounter;
+        idCounter++;
+    }
+
+    public Account(boolean isJoint, double balance, User user) {
+        FundChecker.checkFunds(balance);
+        this.isJoint = isJoint;
+        this.balance = balance;
+        this.attachedUsers.add(user);
         this.id = idCounter;
         idCounter++;
     }
@@ -57,6 +78,18 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public List<User> getAttachedUsers() {
+        return attachedUsers;
+    }
+
+    public void setAttachedUsers(List<User> attachedUsers) {
+        this.attachedUsers = attachedUsers;
+    }
+    
+    public void addAttachedUser(User user) {
+        this.attachedUsers.add(user);
     }
 
 }
