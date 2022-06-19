@@ -7,11 +7,11 @@ import com.revature.utils.FundChecker;
 
 public class Account {
 
-    private static int idCounter = 1;
+    public static int idCounter = 1;
     private int id;
     private boolean isJoint;
     private double balance;
-    private List<User> attachedUsers = new ArrayList<>();
+    private List<Customer> attachedUsers = new ArrayList<>();
 
     public Account() {
         this.isJoint = false;
@@ -20,7 +20,7 @@ public class Account {
         idCounter++;
     }
 
-    public Account(User user) {
+    public Account(Customer user) {
         this.isJoint = false;
         this.balance = 0.0;
         this.attachedUsers.add(user);
@@ -36,7 +36,7 @@ public class Account {
         idCounter++;
     }
 
-    public Account(boolean isJoint, double balance, User user) {
+    public Account(boolean isJoint, double balance, Customer user) {
         FundChecker.checkFunds(balance);
         this.isJoint = isJoint;
         this.balance = balance;
@@ -80,7 +80,7 @@ public class Account {
         this.balance = balance;
     }
 
-    public List<User> getAttachedUsers() {
+    public List<Customer> getAttachedUsers() {
         return attachedUsers;
     }
     
@@ -88,11 +88,11 @@ public class Account {
         return attachedUsers.get(index);
     }
 
-    public void setAttachedUsers(List<User> attachedUsers) {
+    public void setAttachedUsers(List<Customer> attachedUsers) {
         this.attachedUsers = attachedUsers;
     }
     
-    public void addAttachedUser(User user) {
+    public void addAttachedUser(Customer user) {
         this.attachedUsers.add(user);
     }
 
@@ -100,6 +100,42 @@ public class Account {
     public String toString() {
         return "Account [attachedUsers=" + attachedUsers + ", balance=" + balance + ", id=" + id + ", isJoint="
                 + isJoint + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((attachedUsers == null) ? 0 : attachedUsers.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(balance);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + id;
+        result = prime * result + (isJoint ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Account other = (Account) obj;
+        if (attachedUsers == null) {
+            if (other.attachedUsers != null)
+                return false;
+        } else if (!attachedUsers.equals(other.attachedUsers))
+            return false;
+        if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance))
+            return false;
+        if (id != other.id)
+            return false;
+        if (isJoint != other.isJoint)
+            return false;
+        return true;
     }
 
 }
