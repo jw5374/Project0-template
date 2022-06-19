@@ -3,6 +3,7 @@ package com.revature;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.revature.exceptions.UserAlreadyExistsException;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
 
@@ -22,7 +23,12 @@ public class UserRegistrationTests extends TestBankFuncsSetup {
 
         Assert.assertEquals(2, bank.getBankCustomers().size());
         Assert.assertEquals(5, bank.getBankUsers().size());
-    }    
+    }
+
+    @Test(expected = UserAlreadyExistsException.class)
+    public void registerWithExistingUsername() {
+        bank.addBankUser("john2", new Customer("John3", "csafe", "John", "Connor", "jc@email.com", "4738629505"));
+    }
 
 
 }
