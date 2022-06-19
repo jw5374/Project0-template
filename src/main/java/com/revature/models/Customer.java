@@ -34,12 +34,12 @@ public class Customer extends User {
         account.addAttachedUser(this);
     }
 
-    public Account applyAccount() {
-        return new Account(this);
+    public void applyAccount(Bank bank) {
+        bank.addPendingAccs(new Account(this));
     }
 
-    public Account applyAccount(boolean joint, double balance) {
-        return new Account(joint, balance, this);
+    public void applyAccount(Bank bank, boolean joint, double balance) {
+        bank.addPendingAccs(new Account(joint, balance, this));
     }
 
 }
