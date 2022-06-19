@@ -8,8 +8,8 @@ public class Customer extends User {
 
     private List<Account> openAccounts = new ArrayList<>();
 
-    public Customer(String username, String password) {
-        super(username, password);
+    public Customer(String username, String password, String firstname, String lastname, String email, String phone) {
+        super(username, password, firstname, lastname, email, phone);
     }
 
     public void transferFunds(int first, int second, double amt) {
@@ -31,14 +31,15 @@ public class Customer extends User {
 
     public void addOpenAccount(Account account) {
         openAccounts.add(account);
+        account.addAttachedUser(this);
     }
 
     public Account applyAccount() {
-        return new Account();
+        return new Account(this);
     }
 
     public Account applyAccount(boolean joint, double balance) {
-        return new Account(joint, balance);
+        return new Account(joint, balance, this);
     }
 
 }
