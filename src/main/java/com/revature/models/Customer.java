@@ -31,7 +31,6 @@ public class Customer extends User {
 
     public void addOpenAccount(Account account) {
         openAccounts.add(account);
-        account.addAttachedUser(this);
     }
 
     public void removeOpenAccount(Account account) {
