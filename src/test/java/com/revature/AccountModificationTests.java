@@ -122,6 +122,24 @@ public class AccountModificationTests extends TestBankFuncsSetup {
         Assert.assertEquals(36, c2.getOpenAccount(0).getBalance(), 0.0001);
     }
 
+    @Test
+    public void adminCloseOpenAccount() {
+        Customer c1 = (Customer) bank.getBankCustomer(0);
+        Admin adm = (Admin) bank.getBankUser("james1");
+        c1.applyAccount(bank, false, 100.0);
+        adm.approveAcc(bank, 0, "john1");
+
+        Assert.assertEquals(0, bank.getPendingAccs().size());;
+        Assert.assertEquals(1, bank.getApprovedAccs().size());
+        Assert.assertEquals(1, c1.getOpenAccounts().size());
+        Assert.assertEquals(100.0, c1.getOpenAccount(0).getBalance(), 0.0001);
+
+        adm.cancelAccount(bank, 0);
+
+        Assert.assertEquals(0, bank.getApprovedAccs().size());
+        Assert.assertEquals(0, c1.getOpenAccounts().size());
+    }
+
     @Test(expected = InsufficientFundsException.class)
     public void customerTransferFundsInsufficient() {
         Customer c1 = (Customer) bank.getBankCustomer(0);

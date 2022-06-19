@@ -34,6 +34,10 @@ public class Customer extends User {
         account.addAttachedUser(this);
     }
 
+    public void removeOpenAccount(Account account) {
+        openAccounts.remove(account);
+    }
+
     public void applyAccount(Bank bank) {
         bank.addPendingAccs(new Account(this));
     }

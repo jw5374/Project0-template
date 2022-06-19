@@ -15,4 +15,11 @@ public class Admin extends Employee {
         ac2.deposit(amt);
     }
 
+    public void cancelAccount(Bank bank, int index) {
+        Account closed = bank.popApproved(index);
+        for(Customer cust : closed.getAttachedUsers()) {
+            cust.removeOpenAccount(closed);
+        }
+    }
+
 }
