@@ -83,6 +83,10 @@ public class Account {
     public List<User> getAttachedUsers() {
         return attachedUsers;
     }
+    
+    public User getAttachedUser(int index) {
+        return attachedUsers.get(index);
+    }
 
     public void setAttachedUsers(List<User> attachedUsers) {
         this.attachedUsers = attachedUsers;
@@ -90,6 +94,12 @@ public class Account {
     
     public void addAttachedUser(User user) {
         this.attachedUsers.add(user);
+    }
+
+    @Override
+    public String toString() {
+        return "Account [attachedUsers=" + attachedUsers + ", balance=" + balance + ", id=" + id + ", isJoint="
+                + isJoint + "]";
     }
 
 }
