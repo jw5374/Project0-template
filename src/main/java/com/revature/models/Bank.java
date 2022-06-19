@@ -13,9 +13,16 @@ public class Bank {
 
     public Bank() {}
     
-    public Bank(List<Account> pendingAccs, List<Account> approvedAccs, HashMap<String, User> bankUsers) {
+    public Bank(List<Customer> bankCustomers, HashMap<String, User> bankUsers) {
+        this.bankCustomers = bankCustomers;
+        this.bankUsers = bankUsers;
+    }
+
+    public Bank(List<Account> pendingAccs, List<Account> approvedAccs, List<Customer> bankCustomers,
+            HashMap<String, User> bankUsers) {
         this.pendingAccs = pendingAccs;
         this.approvedAccs = approvedAccs;
+        this.bankCustomers = bankCustomers;
         this.bankUsers = bankUsers;
     }
 
