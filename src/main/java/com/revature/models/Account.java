@@ -98,8 +98,28 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account [attachedUsers=" + attachedUsers + ", balance=" + balance + ", id=" + id + ", isJoint="
-                + isJoint + "]";
+        StringBuffer sb = new StringBuffer();
+        sb.append("---------------------------------------\n");
+        sb.append(String.format("| %-5s | %-10s | %-10s |\n", "ID", "Joint", "Balance"));
+        sb.append(String.format("| %-5d | %-10s | %-10d |\n", id, isJoint, balance));
+        return sb.toString();
+    }
+
+    public String toString(int index) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("---------------------------------------\n");
+        sb.append(String.format("| %-5s | %-10s | %-10s |\n", "Index", "Joint", "Balance"));
+        sb.append(String.format("| %-5d | %-10s | %-10d |\n", index, isJoint, balance));
+        return sb.toString();
+    }
+
+    public String attachedUsersToString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Attached Users:\n");
+        for(Customer user : attachedUsers) {
+            sb.append(user.getUsername() + "\n");
+        }
+        return sb.toString();
     }
 
     @Override
