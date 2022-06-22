@@ -10,11 +10,10 @@ public class Employee extends User {
         super(username, password, firstname, lastname, email, phone);
     }
 
-    public void approveAcc(Bank bank, int accIndex, String... username) {
+    public void approveAcc(Bank bank, int accIndex) {
         Account approved = bank.popPending(accIndex);
-        for(String user : username) {
-            Customer cust = (Customer) bank.getBankUser(user);
-            cust.addOpenAccount(approved);
+        for(Customer user : approved.getAttachedUsers()) {
+            user.addOpenAccount(approved);
         }
         bank.addApprovedAccs(approved);
     }
