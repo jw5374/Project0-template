@@ -21,7 +21,7 @@ public class MenuPrinter {
         out.flush();
     }
 
-    public void printPreAuthenticated(BufferedOutputStream out) throws IOException {
+    public void printPreAuthenticated() throws IOException {
         out.write("Welcome to Revature Banking Application\n".getBytes());
         out.write("---------------------------------------\n".getBytes());
         out.write("1. Login\n".getBytes());
@@ -29,27 +29,28 @@ public class MenuPrinter {
         out.flush();
     }
 
-    public void printLoggedinMenu(BufferedOutputStream out, String classname) throws IOException {
+    public void printLoggedinMenu(String classname) throws IOException {
         out.write("Main Menu\n".getBytes());
         out.write("---------------------------------------\n".getBytes());
-        out.write(("You have logged in as a(n): " + classname).getBytes());
+        out.write(("You have logged in as a(n): " + classname + "\n").getBytes());
         out.write("1. View Accounts\n".getBytes());
         out.write("2. View Personal Information\n".getBytes());
         out.flush();
     }
 
-    public void printAccountMenuCustomer(BufferedOutputStream out) throws IOException {
+    public void printAccountMenuCustomer() throws IOException {
         out.write("---------------------------------------\n".getBytes());
         out.write("Account Management:\n".getBytes());
         out.write("1. Apply for an Account\n".getBytes());
         out.write("2. View pending accounts\n".getBytes());
-        out.write("3. Withdraw funds from an account\n".getBytes());
-        out.write("4. Deposit funds to an account\n".getBytes());
-        out.write("5. Transfer funds between your accounts\n".getBytes());
+        out.write("3. Add user to joint account/Make account joint\n".getBytes());
+        out.write("4. Withdraw funds from an account\n".getBytes());
+        out.write("5. Deposit funds to an account\n".getBytes());
+        out.write("6. Transfer funds between your accounts\n".getBytes());
         out.flush();
     }
 
-    public void printAccountMenuEmployee(BufferedOutputStream out) throws IOException {
+    public void printAccountMenuEmployee() throws IOException {
         out.write("Account Management\n".getBytes());
         out.write("---------------------------------------\n".getBytes());
         out.write("1. View Pending Account Applications\n".getBytes());
@@ -57,7 +58,7 @@ public class MenuPrinter {
         out.flush();
     }
 
-    public void printAccountMenuAdmin(BufferedOutputStream out) throws IOException {
+    public void printAccountMenuAdmin() throws IOException {
         out.write("Account Management\n".getBytes());
         out.write("---------------------------------------\n".getBytes());
         out.write("1. View Pending Account Applications\n".getBytes());
@@ -66,7 +67,7 @@ public class MenuPrinter {
         out.flush();
     }
 
-    public void printApprovalMenu(BufferedOutputStream out) throws IOException {
+    public void printApprovalMenu() throws IOException {
         out.write("---------------------------------------\n".getBytes());
         out.write("Pending Accounts:\n".getBytes());
         out.write("1. Approve Account\n".getBytes());
@@ -74,14 +75,14 @@ public class MenuPrinter {
         out.flush();
     }
 
-    public void printCustomerMenu(BufferedOutputStream out) throws IOException {
+    public void printCustomerMenu() throws IOException {
         out.write("---------------------------------------\n".getBytes());
         out.write("Customers:\n".getBytes());
         out.write("1. View Customer Details\n".getBytes());
         out.flush();
     }
 
-    public void printAppovedAccountMenu(BufferedOutputStream out) throws IOException {
+    public void printAppovedAccountMenu() throws IOException {
         out.write("---------------------------------------\n".getBytes());
         out.write("Approved Accounts:\n".getBytes());
         out.write("1. Cancel Account\n".getBytes());
