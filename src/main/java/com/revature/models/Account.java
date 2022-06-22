@@ -109,7 +109,7 @@ public class Account {
         StringBuffer sb = new StringBuffer();
         sb.append("---------------------------------------\n");
         sb.append(String.format("| %-5s | %-10s | %-10s |\n", "Index", "Joint", "Balance"));
-        sb.append(String.format("| %-5d | %-10s | %-10d |\n", index, isJoint, balance));
+        sb.append(String.format("| %-5d | %-10s | %-10.2f |\n", index, isJoint, balance));
         return sb.toString();
     }
 

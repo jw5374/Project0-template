@@ -75,8 +75,8 @@ public abstract class User {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("--------------------------------------------------------------------------------\n");
-        sb.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s |\n", "Username", "First Name", "Last Name", "Email", "Phone"));
-        sb.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s |\n", username, firstname, lastname, email, phone));
+        sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", "Username", "First Name", "Last Name", "Email", "Phone"));
+        sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", username, firstname, lastname, email, phone));
        
         return sb.toString();
     }
