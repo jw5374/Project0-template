@@ -1,8 +1,11 @@
 package com.revature.models;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.revature.utils.MenuPrinter;
 
 public class Customer extends User {
 
@@ -45,4 +48,10 @@ public class Customer extends User {
         bank.addPendingAccs(new Account(joint, balance, this));
     }
 
+    public void printAllAccounts(MenuPrinter mp) throws IOException {
+        for(int i = 0; i < openAccounts.size(); i++) {
+            mp.printMessage(openAccounts.get(i).toString(i));
+            mp.printMessage(openAccounts.get(i).attachedUsersToString());
+        }
+    }
 }

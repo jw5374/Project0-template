@@ -1,9 +1,11 @@
 package com.revature.models;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.revature.utils.MenuPrinter;
 import com.revature.utils.UserChecker;
 
 public class Bank {
@@ -69,6 +71,7 @@ public class Bank {
     }
 
     public User getBankUser(String username) {
+        UserChecker.checkUsernameNotExists(username, this.bankUsers);
         return bankUsers.get(username);
     }
 
@@ -94,6 +97,13 @@ public class Bank {
 
     public void setBankCustomers(List<Customer> bankCustomers) {
         this.bankCustomers = bankCustomers;
+    }
+
+    public void printPendingAccs(MenuPrinter mp) throws IOException {
+        for(int i = 0; i < this.pendingAccs.size(); i++) {
+            mp.printMessage(this.pendingAccs.get(i).toString(i));
+            mp.printMessage(this.pendingAccs.get(i).attachedUsersToString());
+        }
     }
 
     @Override
