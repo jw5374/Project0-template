@@ -18,7 +18,11 @@ public class InitializationTest extends TestBankFuncsSetup {
 
     @Test
     public void customerInfo() {
-        Assert.assertEquals("User [email=jt@email.com, firstname=John, lastname=Thomas, phone=9876543210, username=john2]", bank.getBankCustomer(1).toString());
+        StringBuffer sb = new StringBuffer();
+        sb.append("--------------------------------------------------------------------------------\n");
+        sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", "Username", "First Name", "Last Name", "Email", "Phone"));
+        sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", "john2", "John", "Thomas", "jt@email.com", "9876543210"));
+        Assert.assertEquals(sb.toString(), bank.getBankCustomer(1).toString());
     }
 
     @Test

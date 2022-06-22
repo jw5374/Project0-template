@@ -47,7 +47,7 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Assert.assertEquals(0, c1.getOpenAccounts().size());
         Assert.assertEquals(0, c2.getOpenAccounts().size());
 
-        empl.approveAcc(bank, 0, "john1", "john2");
+        empl.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());
         Assert.assertEquals(1, bank.getApprovedAccs().size());
@@ -69,7 +69,7 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Assert.assertEquals(100.0, applied.getBalance(), 0.0001);
         Assert.assertEquals("john1", applied.getAttachedUser(0).getUsername());
 
-        empl.approveAcc(bank, 0, "john1", "john2");
+        empl.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());
         Assert.assertEquals(1, bank.getApprovedAccs().size());
@@ -106,7 +106,7 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Assert.assertEquals(100.0, applied.getBalance(), 0.0001);
         Assert.assertEquals("john1", applied.getAttachedUser(0).getUsername());
 
-        empl.approveAcc(bank, 0, "john1", "john2");
+        empl.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());
         Assert.assertEquals(1, bank.getApprovedAccs().size());
@@ -152,8 +152,8 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Employee empl = (Employee) bank.getBankUser("jane1");
         c1.applyAccount(bank, false, 100.0);
         c1.applyAccount(bank);
-        empl.approveAcc(bank, 0, "john1");
-        empl.approveAcc(bank, 0, "john1");
+        empl.approveAcc(bank, 0);
+        empl.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());;
         Assert.assertEquals(2, bank.getApprovedAccs().size());
@@ -173,8 +173,8 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Admin adm = (Admin) bank.getBankUser("james1");
         c1.applyAccount(bank, false, 100.0);
         c1.applyAccount(bank);
-        adm.approveAcc(bank, 0, "john1");
-        adm.approveAcc(bank, 0, "john1");
+        adm.approveAcc(bank, 0);
+        adm.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());;
         Assert.assertEquals(2, bank.getApprovedAccs().size());
@@ -195,8 +195,8 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Admin adm = (Admin) bank.getBankUser("james1");
         c1.applyAccount(bank, false, 100.0);
         c2.applyAccount(bank);
-        adm.approveAcc(bank, 0, "john1");
-        adm.approveAcc(bank, 0, "john2");
+        adm.approveAcc(bank, 0);
+        adm.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());;
         Assert.assertEquals(2, bank.getApprovedAccs().size());
@@ -216,7 +216,7 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Customer c1 = (Customer) bank.getBankCustomer(0);
         Admin adm = (Admin) bank.getBankUser("james1");
         c1.applyAccount(bank, false, 100.0);
-        adm.approveAcc(bank, 0, "john1");
+        adm.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());;
         Assert.assertEquals(1, bank.getApprovedAccs().size());
@@ -235,8 +235,8 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Employee empl = (Employee) bank.getBankUser("jane1");
         c1.applyAccount(bank, false, 100.0);
         c1.applyAccount(bank);
-        empl.approveAcc(bank, 0, "john1");
-        empl.approveAcc(bank, 0, "john1");
+        empl.approveAcc(bank, 0);
+        empl.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());;
         Assert.assertEquals(2, bank.getApprovedAccs().size());
@@ -273,8 +273,8 @@ public class AccountModificationTest extends TestBankFuncsSetup {
         Employee empl = (Employee) bank.getBankUser("jane1");
         c1.applyAccount(bank, false, 100.0);
         c1.applyAccount(bank);
-        empl.approveAcc(bank, 0, "john1");
-        empl.approveAcc(bank, 0, "john1");
+        empl.approveAcc(bank, 0);
+        empl.approveAcc(bank, 0);
 
         Assert.assertEquals(0, bank.getPendingAccs().size());;
         Assert.assertEquals(2, bank.getApprovedAccs().size());
