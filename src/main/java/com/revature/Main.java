@@ -4,33 +4,33 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.revature.exceptions.InvalidCredentialsException;
 import com.revature.models.*;
+import com.revature.services.MenuFunctions;
+import com.revature.utils.BankSetup;
 import com.revature.utils.MenuPrinter;
-import com.revature.utils.MenuFunctions;
 
 public class Main {
-
+    private static Logger logger = LogManager.getLogger(Main.class);
+    
     static Scanner scan = new Scanner(System.in);
     static BufferedOutputStream out = new BufferedOutputStream(System.out);
     static MenuPrinter mp = new MenuPrinter(out);
     static String[] userInfo = new String[2];
     static boolean exit = false;
-
-    static Bank bank = new Bank();
-
-    static Customer testUser = new Customer("test1", "password", "John", "Smith", "email@email.com", "1234567890");
-    static Employee testEmployee = new Employee("test2", "password", "John", "Wayne", "email2@email.com", "1234567891");
+    
+    static Bank bank = BankSetup.setupBank();
+    static MenuFunctions mf = new MenuFunctions(bank, mp, scan);
 
     static String userChoice;
 
     public static void main(String[] args) throws IOException {
-        bank.addBankUser("test1", testUser);
-        bank.addBankUser("test2", testEmployee);
-        testUser.applyAccount(bank);
-        testUser.applyAccount(bank, false, 300);
-        testEmployee.approveAcc(bank, 0);
-        
+
+        logger.info("Logger started...");
+
         while(!exit) {
             mp.printPreAuthenticated();
             mp.printInputMessage();
@@ -38,6 +38,10 @@ public class Main {
             scan.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
             handleLogin();
             
+            if(userInfo[0] == null) {
+                return;
+            }
+
             switch(userInfo[0]) {
                 case "Customer":
                     handleUser((Customer) bank.getBankUser(userInfo[1]));
@@ -51,7 +55,6 @@ public class Main {
             }
         }
 
-
         out.close();
         scan.close();
     }
@@ -61,13 +64,16 @@ public class Main {
             switch(userChoice) {
                 case "1":
                     try {
-                        userInfo = MenuFunctions.login(bank, scan);
+                        userInfo = mf.login();
+                        logger.info(userInfo[1] + " has successfully logged in");
                     } catch (InvalidCredentialsException e) {
+                        logger.warn("An unsuccessful login attempt was made");
                         mp.printMessage(e.getMessage() + "\n");
                     }
                     break;
                 case "2":
-                    userInfo = MenuFunctions.register(bank, scan);
+                    userInfo = mf.register();
+                    logger.info(userInfo[1] + " was successfully registered");
                     break;
                 default:
                     mp.printMessage("That is not a recognized choice\n");
@@ -112,13 +118,13 @@ public class Main {
     public static <T> void accountMenuHandler(T user, String classname) throws IOException {
         switch(classname) {
             case "Customer":
-                MenuFunctions.viewAccounts(bank, (Customer) user, scan, mp);
+                mf.viewAccounts((Customer) user);
                 break;
             case "Employee":
-                MenuFunctions.viewAccounts(bank, (Employee) user, scan, mp);
+                mf.viewAccounts((Employee) user);
                 break;
             case "Admin":
-                MenuFunctions.viewAccounts(bank, (Admin) user, scan, mp);
+                mf.viewAccounts((Admin) user);
                 break;
         }
     }

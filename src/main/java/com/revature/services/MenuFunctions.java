@@ -1,25 +1,36 @@
-package com.revature.utils;
+package com.revature.services;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.revature.exceptions.InsufficientFundsException;
 import com.revature.exceptions.InvalidCredentialsException;
 import com.revature.exceptions.InvalidFundsException;
 import com.revature.exceptions.UserAlreadyExistsException;
 import com.revature.exceptions.UserDoesNotExistException;
-import com.revature.models.Account;
-import com.revature.models.Admin;
-import com.revature.models.Bank;
-import com.revature.models.Customer;
-import com.revature.models.Employee;
-import com.revature.models.User;
+import com.revature.models.*;
+import com.revature.utils.MenuPrinter;
 
 public class MenuFunctions {
-    
-    public static String[] login(Bank bank,  Scanner scan) {
+
+    private static Logger logger = LogManager.getLogger(MenuFunctions.class);
+
+    private Bank bank;
+    private MenuPrinter mp;
+    private Scanner scan;
+
+    public MenuFunctions(Bank bank, MenuPrinter mp, Scanner scan) {
+        this.bank = bank;
+        this.mp = mp;
+        this.scan = scan;
+    }
+
+    public String[] login() {
         String uname, passw;
         User user;
         System.out.println("---------------------------------------");
@@ -38,8 +49,9 @@ public class MenuFunctions {
         return result;
     }
     
-    public static String[] register(Bank bank, Scanner scan) {
+    public String[] register() {
         String typename, uname, passw, firstn, lastn, email, phone;
+        User user;
         String[] result = new String[2];
         System.out.print("Please enter username: ");
         uname = scan.next();
@@ -63,15 +75,21 @@ public class MenuFunctions {
         while(true) {
             switch(typename) {
                 case "customer":
-                    bank.addBankUser(uname, new Customer(uname, passw, firstn, lastn, email, phone));
+                    user = new Customer(uname, passw, firstn, lastn, email, phone);
+                    UserServices.insertNewUser(user);
+                    bank.addBankUser(uname, user);
                     result[0] = "Customer";
                     break;
                 case "employee":
-                    bank.addBankUser(uname, new Employee(uname, passw, firstn, lastn, email, phone));
+                    user = new Employee(uname, passw, firstn, lastn, email, phone);
+                    UserServices.insertNewUser(user);
+                    bank.addBankUser(uname, user);
                     result[0] = "Employee";
                     break;
                 case "admin":
-                    bank.addBankUser(uname, new Admin(uname, passw, firstn, lastn, email, phone));
+                    user = new Admin(uname, passw, firstn, lastn, email, phone);
+                    UserServices.insertNewUser(user);
+                    bank.addBankUser(uname, user);
                     result[0] = "Admin";
                     break;
                 default:
@@ -86,7 +104,7 @@ public class MenuFunctions {
         return result;
     }
 
-    public static void viewAccounts(Bank bank, Customer user, Scanner scan, MenuPrinter mp) throws IOException {
+    public void viewAccounts(Customer user) throws IOException {
         String userChoice;
         List<Account> userAccs = user.getOpenAccounts();
         List<Account> pendings = bank.getPendingAccs();
@@ -110,11 +128,12 @@ public class MenuFunctions {
                         }
                         mp.printMessage("Enter the initial balance you would like (0 if nothing): ");
                         amt = scan.nextDouble();
+                        logger.info(user.getUsername() + " has applied for an account with joint status: " + jointstatus + " and balance of $" + amt);
                         user.applyAccount(bank, jointstatus, amt);
                         break;
                     case "2":
                         for(int i = 0; i < pendings.size(); i++) {
-                            if(pendings.get(i).getAttachedUsers().contains(user)) {
+                            if(pendings.get(i).getAttachedUsernames().contains(user.getUsername())) {
                                 mp.printMessage(pendings.get(i).toString(i));
                             }
                         }
@@ -127,6 +146,8 @@ public class MenuFunctions {
                         index = scan.nextInt();
                         if(!userAccs.get(index).isJoint()) {
                             userAccs.get(index).setJoint(true);
+                            AccountServices.updateAccount(userAccs.get(index));
+                            logger.info(user.getUsername() + " has made Account " + userAccs.get(index).getId() + " a joint account");
                             mp.printMessage("This account is now a joint account\n");
                             mp.printMessage("Would you like to add users to this account (y/n)? ");
                             if(!scan.next().equals("y")) {
@@ -150,9 +171,12 @@ public class MenuFunctions {
                                     continue;
                                 }
                                 userAccs.get(index).addAttachedUser((Customer) cust);
+                                AccountServices.updateAccount(userAccs.get(index));
+                                logger.info(user.getUsername() + " has added " + cust.getUsername() +" to Account " + userAccs.get(index).getId());
                                 mp.printMessage("Successfully added " + cust.getUsername() + "\n");
                                 break;
                             } catch (UserDoesNotExistException e) {
+                                logger.warn("UserDoesNotExistException occurred when adding user to joint account");
                                 mp.printMessage(e.getMessage() + "\n");
                                 subChoice = scan.next();
                                 continue;
@@ -168,14 +192,18 @@ public class MenuFunctions {
                         while(true) {
                             try {
                                 userAccs.get(index).withdraw(amt);
+                                AccountServices.updateAccount(userAccs.get(index));
+                                logger.info(user.getUsername() + " withdrew " + amt + " from Account " + userAccs.get(index).getId());
                                 break;
                             } catch (IndexOutOfBoundsException e) {
                                 mp.printMessage("Invalid index, please enter again: ");
                                 index = scan.nextInt();
                             } catch (InsufficientFundsException e) {
+                                logger.warn(user.getUsername() + " tried to withdraw too much from Account " + userAccs.get(index).getId());
                                 mp.printMessage(e.getMessage() + " Please try again: ");
                                 amt = scan.nextDouble();
                             } catch (InvalidFundsException e) {
+                                logger.warn(user.getUsername() + " tried to withdraw a negative amount from Account " + userAccs.get(index).getId());
                                 mp.printMessage(e.getMessage() + " Please try again: ");
                                 amt = scan.nextDouble();
                             }
@@ -190,14 +218,14 @@ public class MenuFunctions {
                         while(true) {
                             try {
                                 userAccs.get(index).deposit(amt);
+                                AccountServices.updateAccount(userAccs.get(index));
+                                logger.info(user.getUsername() + " deposited " + amt + " to Account " + userAccs.get(index).getId());
                                 break;
                             } catch (IndexOutOfBoundsException e) {
                                 mp.printMessage("Invalid index, please enter again: ");
                                 index = scan.nextInt();
-                            } catch (InsufficientFundsException e) {
-                                mp.printMessage(e.getMessage() + " Please try again: ");
-                                amt = scan.nextDouble();
-                            } catch (InvalidFundsException e) {
+                            }  catch (InvalidFundsException e) {
+                                logger.warn(user.getUsername() + " tried to deposit a negative amount to Account " + userAccs.get(index).getId());
                                 mp.printMessage(e.getMessage() + " Please try again: ");
                                 amt = scan.nextDouble();
                             }
@@ -214,6 +242,8 @@ public class MenuFunctions {
                         while(true) {
                             try {
                                 user.transferFunds(index, index2, amt);
+                                AccountServices.updateAccount(userAccs.get(index));
+                                AccountServices.updateAccount(userAccs.get(index2));
                                 break;
                             } catch (IndexOutOfBoundsException e) {
                                 mp.printMessage("Invalid index, please enter again:\n");
@@ -246,7 +276,7 @@ public class MenuFunctions {
         }
     }
 
-    public static void viewAccounts(Bank bank, Employee user, Scanner scan, MenuPrinter mp) throws IOException {
+    public void viewAccounts(Employee user) throws IOException {
         String userChoice;
         mp.printAccountMenuEmployee();
         mp.printInputMessage();
@@ -258,10 +288,10 @@ public class MenuFunctions {
                     case "1":
                         bank.printPendingAccs(mp);
                         mp.printApprovalMenu();
-                        approvalMenu(mp, scan, bank, user);
+                        approvalMenu(user);
                         break;
                     case "2":
-                        customerDetails(mp, scan, subChoice, bank);
+                        customerDetails(subChoice);
                         break;
                     default:
                         mp.printMessage("That is not a recognized choice\n");
@@ -277,7 +307,7 @@ public class MenuFunctions {
         }
     }
 
-    public static void viewAccounts(Bank bank, Admin user, Scanner scan, MenuPrinter mp) throws IOException {
+    public void viewAccounts(Admin user) throws IOException {
         String userChoice;
         // List<Account> pendings = bank.getPendingAccs();
         mp.printAccountMenuAdmin();
@@ -290,12 +320,15 @@ public class MenuFunctions {
                     case "1":
                         bank.printPendingAccs(mp);
                         mp.printApprovalMenu();
-                        approvalMenu(mp, scan, bank, user);
+                        approvalMenu(user);
                         break;
                     case "2":
+                        bank.printApprovedAccs(mp);
+                        mp.printAppovedAccountMenu();
+                        approvedAccounts(user);
                         break;
                     case "3":
-                        customerDetails(mp, scan, subChoice, bank);
+                        customerDetails(subChoice);
                         break;
                     default:
                         mp.printMessage("That is not a recognized choice\n");
@@ -311,7 +344,7 @@ public class MenuFunctions {
         }
     }
 
-    public static void customerDetails(MenuPrinter mp, Scanner scan, String subChoice, Bank bank) throws IOException {
+    public void customerDetails(String subChoice) throws IOException {
         mp.printMessage("Customer usernames:\n");
         for(Customer cust : bank.getBankCustomers()) {
             mp.printMessage(cust.getUsername() + "\n");
@@ -326,11 +359,23 @@ public class MenuFunctions {
                     subChoice = scan.next();
                     continue;
                 }
+
+                mp.printMessage(selected.toString());
+                mp.printMessage("Would you like to view their account details (y/n)? ");
+                subChoice = scan.next();
+                if(subChoice.equals("y")) {
+                    Customer cust = (Customer) selected;
+                    for(Account a : cust.getOpenAccounts()) {
+                        mp.printMessage(a.toString());
+                    }
+                    mp.printMessage("Enter any key to continue ");
+                    scan.nextLine();
+                    scan.nextLine();
+                }
                 mp.printMessage("Customer usernames:\n");
                 for(Customer cust : bank.getBankCustomers()) {
                     mp.printMessage(cust.getUsername() + "\n");
                 }
-                mp.printMessage(selected.toString());
                 mp.printMessage("Enter username of customer for details (or q to exit): ");
                 subChoice = scan.next();
             } catch (UserDoesNotExistException e) {
@@ -341,7 +386,7 @@ public class MenuFunctions {
         }
     }
 
-    public static void approvalMenu(MenuPrinter mp, Scanner scan, Bank bank, Employee user) throws IOException {
+    public void approvalMenu(Employee user) throws IOException {
         String userChoice;
         mp.printInputMessage();
         userChoice = scan.next();
@@ -389,6 +434,81 @@ public class MenuFunctions {
             }
             bank.printPendingAccs(mp);
             mp.printApprovalMenu();
+            mp.printInputMessage();
+            userChoice = scan.next();
+        }
+    }
+
+    public void approvedAccounts(Admin user) throws IOException {
+        String userChoice;
+        Account acc;
+        mp.printInputMessage();
+        userChoice = scan.next();
+        while(!userChoice.equals("q")) {
+            int index, index2;
+            double amt;
+            try {
+                switch(userChoice) {
+                    case "1":
+                        mp.printMessage("Enter the index of the account you would like to cancel: ");
+                        index = scan.nextInt();
+                        user.cancelAccount(bank, index);
+                        break;
+                    case "2":
+                        mp.printMessage("Enter the index of the account you would like to withdraw from: ");
+                        index = scan.nextInt();
+                        acc = bank.getApprovedAcc(index);
+                        mp.printMessage("Enter the amount you would like to withdraw: ");
+                        amt = scan.nextDouble();
+                        acc.withdraw(amt);
+                        AccountServices.updateAccount(acc);
+                        break;
+                    case "3":
+                        mp.printMessage("Enter the index of the account you would like to deposit to: ");
+                        index = scan.nextInt();
+                        acc = bank.getApprovedAcc(index);
+                        mp.printMessage("Enter the amount you would like to deposit: ");
+                        amt = scan.nextDouble();
+                        acc.deposit(amt);
+                        AccountServices.updateAccount(acc);
+                        break;
+                    case "4":
+                        mp.printMessage("Enter the index of the account you would like to transfer from: ");
+                        index = scan.nextInt();
+                        mp.printMessage("Enter the index of the account you would like to transfer to: ");
+                        index2 = scan.nextInt();
+                        mp.printMessage("Enter the amount you would like to transfer: ");
+                        amt = scan.nextDouble();
+                        acc = bank.getApprovedAcc(index);
+                        acc.withdraw(amt);
+                        AccountServices.updateAccount(acc);
+                        acc = bank.getApprovedAcc(index2);
+                        acc.deposit(amt);
+                        AccountServices.updateAccount(acc);
+                        break;
+                    default:
+                        mp.printMessage("That is not a recognized choice\n");
+                }
+            } catch (InputMismatchException e) {
+                mp.printMessage(e.getClass().getSimpleName() + " please try again");
+                scan.nextLine();
+                scan.nextLine();
+            } catch (IndexOutOfBoundsException e) {
+                mp.printMessage(e.getClass().getSimpleName() + " please try again");
+                scan.nextLine();
+                scan.nextLine();
+            } catch (InvalidFundsException e) {
+                mp.printMessage(e.getMessage());
+                scan.nextLine();
+                scan.nextLine();
+            } catch (InsufficientFundsException e) {
+                mp.printMessage(e.getMessage());
+                scan.nextLine();
+                scan.nextLine();
+            }
+            
+            bank.printApprovedAccs(mp);
+            mp.printAppovedAccountMenu();
             mp.printInputMessage();
             userChoice = scan.next();
         }

@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.revature.services.AccountServices;
 import com.revature.utils.MenuPrinter;
 
 public class Customer extends User {
-
+    private static Logger logger = LogManager.getLogger(Customer.class);
     private List<Account> openAccounts = new ArrayList<>();
 
     public Customer(String username, String password, String firstname, String lastname, String email, String phone) {
@@ -18,6 +22,7 @@ public class Customer extends User {
     public void transferFunds(int first, int second, double amt) {
         this.openAccounts.get(first).withdraw(amt);
         this.openAccounts.get(second).deposit(amt);
+        logger.info(getUsername() + " has transferred $" + amt + " from Account " + this.openAccounts.get(first).getId() + " to Account " + this.openAccounts.get(second).getId());
     }
 
     public List<Account> getOpenAccounts() {
@@ -36,16 +41,28 @@ public class Customer extends User {
         openAccounts.add(account);
     }
 
-    public void removeOpenAccount(Account account) {
-        openAccounts.remove(account);
+    public void removeOpenAccount(int accId) {
+        for(int i = 0; i < openAccounts.size(); i++) {
+            if(openAccounts.get(i).getId() == accId) {
+                openAccounts.remove(i);
+            }
+        }
     }
 
     public void applyAccount(Bank bank) {
-        bank.addPendingAccs(new Account(this));
+        Account applying = new Account(this);
+        int id = AccountServices.insertNewAccount(applying);
+        applying.setId(id);
+        bank.addPendingAccs(applying);
+        logger.info(getUsername() +  " has applied for an account with id: " + applying.getId());
     }
 
     public void applyAccount(Bank bank, boolean joint, double balance) {
-        bank.addPendingAccs(new Account(joint, balance, this));
+        Account applying = new Account(joint, balance, this);
+        int id = AccountServices.insertNewAccount(applying);
+        applying.setId(id);
+        bank.addPendingAccs(applying);
+        logger.info(getUsername() +  " has applied for an account with id: " + applying.getId());
     }
 
     public void printAllAccounts(MenuPrinter mp) throws IOException {

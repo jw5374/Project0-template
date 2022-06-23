@@ -99,6 +99,13 @@ public class Bank {
         this.bankCustomers = bankCustomers;
     }
 
+    public void printApprovedAccs(MenuPrinter mp) throws IOException {
+        for(int i = 0; i < this.approvedAccs.size(); i++) {
+            mp.printMessage(this.approvedAccs.get(i).toString(i));
+            mp.printMessage(this.approvedAccs.get(i).attachedUsersToString());
+        }
+    }
+
     public void printPendingAccs(MenuPrinter mp) throws IOException {
         for(int i = 0; i < this.pendingAccs.size(); i++) {
             mp.printMessage(this.pendingAccs.get(i).toString(i));

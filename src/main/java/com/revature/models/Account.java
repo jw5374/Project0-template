@@ -7,42 +7,36 @@ import com.revature.utils.FundChecker;
 
 public class Account {
 
-    public static int idCounter = 1;
     private int id;
     private boolean isJoint;
+    private boolean pending = true;
     private double balance;
+    private List<String> attachedUsernames = new ArrayList<>();
     private List<Customer> attachedUsers = new ArrayList<>();
 
     public Account() {
         this.isJoint = false;
         this.balance = 0.0;
-        this.id = idCounter;
-        idCounter++;
     }
 
     public Account(Customer user) {
         this.isJoint = false;
         this.balance = 0.0;
-        this.attachedUsers.add(user);
-        this.id = idCounter;
-        idCounter++;
+        addAttachedUser(user);
+
     }
 
     public Account(boolean isJoint, double balance) {
         FundChecker.checkFunds(balance);
         this.isJoint = isJoint;
         this.balance = balance;
-        this.id = idCounter;
-        idCounter++;
     }
 
     public Account(boolean isJoint, double balance, Customer user) {
         FundChecker.checkFunds(balance);
         this.isJoint = isJoint;
         this.balance = balance;
-        this.attachedUsers.add(user);
-        this.id = idCounter;
-        idCounter++;
+        addAttachedUser(user);
     }
 
     public void withdraw(double amt) {
@@ -71,6 +65,14 @@ public class Account {
     public void setJoint(boolean isJoint) {
         this.isJoint = isJoint;
     }
+    
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
 
     public double getBalance() {
         return balance;
@@ -78,6 +80,14 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public List<String> getAttachedUsernames() {
+        return attachedUsernames;
+    }
+
+    public void setAttachedUsernames(List<String> attachedUsernames) {
+        this.attachedUsernames = attachedUsernames;
     }
 
     public List<Customer> getAttachedUsers() {
@@ -94,6 +104,8 @@ public class Account {
     
     public void addAttachedUser(Customer user) {
         this.attachedUsers.add(user);
+        this.attachedUsernames.add(user.getUsername());
+        user.addOpenAccount(this);
     }
 
     @Override
@@ -101,7 +113,7 @@ public class Account {
         StringBuffer sb = new StringBuffer();
         sb.append("---------------------------------------\n");
         sb.append(String.format("| %-5s | %-10s | %-10s |\n", "ID", "Joint", "Balance"));
-        sb.append(String.format("| %-5d | %-10s | %-10d |\n", id, isJoint, balance));
+        sb.append(String.format("| %-5d | %-10s | %-10.2f |\n", id, isJoint, balance));
         return sb.toString();
     }
 
@@ -116,8 +128,8 @@ public class Account {
     public String attachedUsersToString() {
         StringBuffer sb = new StringBuffer();
         sb.append("Attached Users:\n");
-        for(Customer user : attachedUsers) {
-            sb.append(user.getUsername() + "\n");
+        for(String user : attachedUsernames) {
+            sb.append(user + "\n");
         }
         return sb.toString();
     }

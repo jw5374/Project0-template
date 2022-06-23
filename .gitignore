@@ -2,5 +2,6 @@ target/site
 target/surefire-reports
 target/maven-archiver
 target/maven-status
+logs/
 *.exec
 *.jar
