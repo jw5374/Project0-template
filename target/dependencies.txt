@@ -1,0 +1,8 @@
+digraph "com.revature:project0:jar:0.0.1-SNAPSHOT" { 
+	"com.revature:project0:jar:0.0.1-SNAPSHOT" -> "junit:junit:jar:4.13.1:test" ; 
+	"com.revature:project0:jar:0.0.1-SNAPSHOT" -> "org.postgresql:postgresql:jar:42.3.3:compile" ; 
+	"com.revature:project0:jar:0.0.1-SNAPSHOT" -> "org.apache.logging.log4j:log4j-core:jar:2.11.2:compile" ; 
+	"junit:junit:jar:4.13.1:test" -> "org.hamcrest:hamcrest-core:jar:1.3:test" ; 
+	"org.postgresql:postgresql:jar:42.3.3:compile" -> "org.checkerframework:checker-qual:jar:3.5.0:runtime" ; 
+	"org.apache.logging.log4j:log4j-core:jar:2.11.2:compile" -> "org.apache.logging.log4j:log4j-api:jar:2.11.2:compile" ; 
+ } 

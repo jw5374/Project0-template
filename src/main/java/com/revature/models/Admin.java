@@ -29,7 +29,7 @@ public class Admin extends Employee {
         for(String user : closed.getAttachedUsernames()) {
             Customer cust = (Customer) bank.getBankUser(user);
             cust.removeOpenAccount(closed.getId());
-            logger.info(getUsername() + " has lost Account " + closed.getId());
+            logger.info(cust.getUsername() + " has lost Account " + closed.getId());
         }
         
     }

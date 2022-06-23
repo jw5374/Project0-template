@@ -105,7 +105,6 @@ public class Account {
     public void addAttachedUser(Customer user) {
         this.attachedUsers.add(user);
         this.attachedUsernames.add(user.getUsername());
-        user.addOpenAccount(this);
     }
 
     @Override

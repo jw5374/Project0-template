@@ -19,13 +19,14 @@ public class AccountOperations implements AccountDAO {
     @Override
     public int insertAccount(Account acc) {
         try (Connection conn = DatabaseAccess.getConnection()) {
-            String sql = "INSERT INTO accounts (attachedusers, joint, balance) VALUES (?, ?, ?) RETURNING accounts.id";
+            String sql = "INSERT INTO accounts (attachedusers, joint, balance, pendingstatus) VALUES (?, ?, ?, ?) RETURNING accounts.id";
             PreparedStatement stmt = conn.prepareStatement(sql);
             Array preparedArray = conn.createArrayOf("VARCHAR", acc.getAttachedUsernames().toArray());
 
             stmt.setArray(1, preparedArray);
             stmt.setBoolean(2, acc.isJoint());
             stmt.setDouble(3, acc.getBalance());
+            stmt.setBoolean(4, acc.isPending());
 
             ResultSet res = stmt.executeQuery();
             if(res != null) {
