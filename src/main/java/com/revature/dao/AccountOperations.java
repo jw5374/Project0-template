@@ -12,13 +12,18 @@ import java.util.List;
 
 import com.revature.dao.interfaces.AccountDAO;
 import com.revature.models.Account;
-import com.revature.utils.DatabaseAccess;
 
 public class AccountOperations implements AccountDAO {
 
+    private Connection conn;
+
+    public AccountOperations(Connection conn) {
+        this.conn = conn;
+    }
+
     @Override
     public int insertAccount(Account acc) {
-        try (Connection conn = DatabaseAccess.getConnection()) {
+        try {
             String sql = "INSERT INTO accounts (attachedusers, joint, balance, pendingstatus) VALUES (?, ?, ?, ?) RETURNING accounts.id";
             PreparedStatement stmt = conn.prepareStatement(sql);
             Array preparedArray = conn.createArrayOf("VARCHAR", acc.getAttachedUsernames().toArray());
@@ -44,7 +49,7 @@ public class AccountOperations implements AccountDAO {
     @Override
     public List<Account> fetchAllAccounts() {
         List<Account> result = new ArrayList<>();
-        try (Connection conn = DatabaseAccess.getConnection()) {
+        try {
             Statement stmt = conn.createStatement();
 
             String sql = "SELECT * FROM accounts";
@@ -73,7 +78,7 @@ public class AccountOperations implements AccountDAO {
     
     @Override
     public void updateAccount(Account acc) {
-        try (Connection conn = DatabaseAccess.getConnection()) {
+        try {
             
             String sql = "UPDATE accounts SET attachedusers = ?, joint = ?, balance = ?, pendingstatus = ? WHERE id = ?";
             
@@ -94,7 +99,7 @@ public class AccountOperations implements AccountDAO {
 
     @Override
     public void deleteAccount(int accId) {
-        try (Connection conn = DatabaseAccess.getConnection()) {
+        try {
             
             String sql = "DELETE FROM accounts WHERE id = ?";
             

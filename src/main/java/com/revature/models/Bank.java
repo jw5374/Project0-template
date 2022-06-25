@@ -87,6 +87,16 @@ public class Bank {
         this.bankUsers.put(username, user);
     }
 
+    public void removeBankUser(String username) {
+        UserChecker.checkUsernameNotExists(username, this.bankUsers);
+        for(int i = 0; i < this.bankCustomers.size(); i++) {
+            if(this.bankCustomers.get(i).getUsername().equals(username)) {
+                this.bankCustomers.remove(i);
+            }
+        }
+        this.bankUsers.remove(username);
+    }
+
     public List<Customer> getBankCustomers() {
         return bankCustomers;
     }

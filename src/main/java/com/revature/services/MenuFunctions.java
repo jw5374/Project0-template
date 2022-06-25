@@ -23,11 +23,15 @@ public class MenuFunctions {
     private Bank bank;
     private MenuPrinter mp;
     private Scanner scan;
+    private AccountServices as;
+    private UserServices us;
 
-    public MenuFunctions(Bank bank, MenuPrinter mp, Scanner scan) {
+    public MenuFunctions(Bank bank, MenuPrinter mp, Scanner scan, AccountServices as, UserServices us) {
         this.bank = bank;
         this.mp = mp;
         this.scan = scan;
+        this.as = as;
+        this.us = us;
     }
 
     public String[] login() {
@@ -53,11 +57,11 @@ public class MenuFunctions {
         String typename, uname, passw, firstn, lastn, email, phone;
         User user;
         String[] result = new String[2];
-        System.out.print("Please enter username: ");
+        System.out.print("Please enter Username: ");
         uname = scan.next();
         while(bank.getBankUsers().containsKey(uname)) {
             System.out.println(new UserAlreadyExistsException(uname).getMessage());
-            System.out.print("Please enter register Username: ");
+            System.out.print("Please enter Username: ");
             uname = scan.next();
         }
         System.out.print("Please enter Password: ");
@@ -75,20 +79,20 @@ public class MenuFunctions {
         while(true) {
             switch(typename) {
                 case "customer":
-                    user = new Customer(uname, passw, firstn, lastn, email, phone);
-                    UserServices.insertNewUser(user);
+                    user = new Customer(uname, passw, firstn, lastn, email, phone, as);
+                    us.insertNewUser(user);
                     bank.addBankUser(uname, user);
                     result[0] = "Customer";
                     break;
                 case "employee":
-                    user = new Employee(uname, passw, firstn, lastn, email, phone);
-                    UserServices.insertNewUser(user);
+                    user = new Employee(uname, passw, firstn, lastn, email, phone, as);
+                    us.insertNewUser(user);
                     bank.addBankUser(uname, user);
                     result[0] = "Employee";
                     break;
                 case "admin":
-                    user = new Admin(uname, passw, firstn, lastn, email, phone);
-                    UserServices.insertNewUser(user);
+                    user = new Admin(uname, passw, firstn, lastn, email, phone, as);
+                    us.insertNewUser(user);
                     bank.addBankUser(uname, user);
                     result[0] = "Admin";
                     break;
@@ -113,6 +117,8 @@ public class MenuFunctions {
         mp.printInputMessage();
         userChoice = scan.next();
         while(!userChoice.equals("q")) {
+            userAccs = user.getOpenAccounts();
+            pendings = bank.getPendingAccs();
             double amt;
             boolean jointstatus;
             int index, index2;
@@ -142,11 +148,17 @@ public class MenuFunctions {
                         scan.nextLine();
                         break;
                     case "3":
+                        if(userAccs.size() < 1) {
+                            mp.printMessage("You have no open accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         mp.printMessage("Enter the account index you would like to add users to/make joint: ");
                         index = scan.nextInt();
                         if(!userAccs.get(index).isJoint()) {
                             userAccs.get(index).setJoint(true);
-                            AccountServices.updateAccount(userAccs.get(index));
+                            as.updateAccount(userAccs.get(index));
                             logger.info(user.getUsername() + " has made Account " + userAccs.get(index).getId() + " a joint account");
                             mp.printMessage("This account is now a joint account\n");
                             mp.printMessage("Would you like to add users to this account (y/n)? ");
@@ -174,7 +186,7 @@ public class MenuFunctions {
                                 custCast = (Customer) cust;
                                 userAccs.get(index).addAttachedUser(custCast);
                                 custCast.addOpenAccount(userAccs.get(index));
-                                AccountServices.updateAccount(userAccs.get(index));
+                                as.updateAccount(userAccs.get(index));
                                 logger.info(user.getUsername() + " has added " + cust.getUsername() +" to Account " + userAccs.get(index).getId());
                                 mp.printMessage("Successfully added " + cust.getUsername() + "\n");
                                 break;
@@ -188,6 +200,12 @@ public class MenuFunctions {
     
                         break;
                     case "4":
+                        if(userAccs.size() < 1) {
+                            mp.printMessage("You have no open accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         mp.printMessage("Enter the index of the account you would like to withdraw from: ");
                         index = scan.nextInt();
                         mp.printMessage("Enter the amount you would like to withdraw: ");
@@ -195,7 +213,7 @@ public class MenuFunctions {
                         while(true) {
                             try {
                                 userAccs.get(index).withdraw(amt);
-                                AccountServices.updateAccount(userAccs.get(index));
+                                as.updateAccount(userAccs.get(index));
                                 logger.info(user.getUsername() + " withdrew $" + amt + " from Account " + userAccs.get(index).getId());
                                 break;
                             } catch (IndexOutOfBoundsException e) {
@@ -214,6 +232,12 @@ public class MenuFunctions {
                         mp.printMessage("Successfully withdrawn $" + amt + "\n");
                         break;
                     case "5":
+                        if(userAccs.size() < 1) {
+                            mp.printMessage("You have no open accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         mp.printMessage("Enter the index of the account you would like to deposit to: ");
                         index = scan.nextInt();
                         mp.printMessage("Enter the amount you would like to deposit: ");
@@ -221,7 +245,7 @@ public class MenuFunctions {
                         while(true) {
                             try {
                                 userAccs.get(index).deposit(amt);
-                                AccountServices.updateAccount(userAccs.get(index));
+                                as.updateAccount(userAccs.get(index));
                                 logger.info(user.getUsername() + " deposited $" + amt + " to Account " + userAccs.get(index).getId());
                                 break;
                             } catch (IndexOutOfBoundsException e) {
@@ -236,6 +260,12 @@ public class MenuFunctions {
                         mp.printMessage("Successfully deposited $" + amt + "\n");
                         break;
                     case "6":
+                        if(userAccs.size() < 1) {
+                            mp.printMessage("You have no open accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         mp.printMessage("Enter the index of the account you would like to transfer from: ");
                         index = scan.nextInt();
                         mp.printMessage("Enter the index of the account you would like to transfer to: ");
@@ -245,12 +275,12 @@ public class MenuFunctions {
                         while(true) {
                             try {
                                 user.transferFunds(index, index2, amt);
-                                AccountServices.updateAccount(userAccs.get(index));
-                                AccountServices.updateAccount(userAccs.get(index2));
+                                as.updateAccount(userAccs.get(index));
+                                as.updateAccount(userAccs.get(index2));
                                 break;
                             } catch (IndexOutOfBoundsException e) {
                                 mp.printMessage("Invalid index, please enter again:\n");
-                                mp.printMessage("Index of the account to trasnfer from: ");
+                                mp.printMessage("Index of the account to transfer from: ");
                                 index = scan.nextInt();
                                 mp.printMessage("Index of the account to transfer to: ");
                                 index2 = scan.nextInt();
@@ -289,6 +319,12 @@ public class MenuFunctions {
             try {
                 switch(userChoice) {
                     case "1":
+                        if(bank.getPendingAccs().size() < 1) {
+                            mp.printMessage("There are no pending accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         bank.printPendingAccs(mp);
                         mp.printApprovalMenu();
                         approvalMenu(user);
@@ -320,11 +356,23 @@ public class MenuFunctions {
             try {
                 switch(userChoice) {
                     case "1":
+                        if(bank.getPendingAccs().size() < 1) {
+                            mp.printMessage("There are no pending accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         bank.printPendingAccs(mp);
                         mp.printApprovalMenu();
                         approvalMenu(user);
                         break;
                     case "2":
+                        if(bank.getApprovedAccs().size() < 1) {
+                            mp.printMessage("There are no approved accounts.");
+                            scan.nextLine();
+                            scan.nextLine();
+                            break;
+                        }
                         bank.printApprovedAccs(mp);
                         mp.printAppovedAccountMenu();
                         approvedAccounts(user);
@@ -463,7 +511,7 @@ public class MenuFunctions {
                         mp.printMessage("Enter the amount you would like to withdraw: ");
                         amt = scan.nextDouble();
                         acc.withdraw(amt);
-                        AccountServices.updateAccount(acc);
+                        as.updateAccount(acc);
                         logger.info("Admin: " + user.getUsername() + " has withdrawn $" + amt + " from Account " + acc.getId());
                         break;
                     case "3":
@@ -473,7 +521,7 @@ public class MenuFunctions {
                         mp.printMessage("Enter the amount you would like to deposit: ");
                         amt = scan.nextDouble();
                         acc.deposit(amt);
-                        AccountServices.updateAccount(acc);
+                        as.updateAccount(acc);
                         logger.info("Admin: " + user.getUsername() + " has deposited $" + amt + " to Account " + acc.getId());
                         break;
                     case "4":
@@ -485,9 +533,9 @@ public class MenuFunctions {
                         amt = scan.nextDouble();
                         user.transferFunds(bank.getApprovedAcc(index), bank.getApprovedAcc(index2), amt);
                         acc = bank.getApprovedAcc(index);
-                        AccountServices.updateAccount(acc);
+                        as.updateAccount(acc);
                         acc = bank.getApprovedAcc(index2);
-                        AccountServices.updateAccount(acc);
+                        as.updateAccount(acc);
                         break;
                     default:
                         mp.printMessage("That is not a recognized choice\n");

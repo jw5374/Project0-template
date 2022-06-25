@@ -12,8 +12,13 @@ public class Admin extends Employee {
         super(username, password);
     }
     
-    public Admin(String username, String password, String firstname, String lastname, String email, String phone) {
-        super(username, password, firstname, lastname, email, phone);
+    // public Admin(String username, String password, String firstname, String lastname, String email, String phone) {
+    //     super(username, password, firstname, lastname, email, phone);
+    // }
+
+    public Admin(String username, String password, String firstname, String lastname, String email, String phone,
+            AccountServices as) {
+        super(username, password, firstname, lastname, email, phone, as);
     }
 
     public void transferFunds(Account ac1, Account ac2, double amt) {
@@ -24,7 +29,7 @@ public class Admin extends Employee {
 
     public void cancelAccount(Bank bank, int index) {
         Account closed = bank.popApproved(index);
-        AccountServices.deleteAccount(closed.getId());
+        getAs().deleteAccount(closed.getId());
         logger.info("Admin: " + getUsername() + " has closed Account " + closed.getId());
         for(String user : closed.getAttachedUsernames()) {
             Customer cust = (Customer) bank.getBankUser(user);

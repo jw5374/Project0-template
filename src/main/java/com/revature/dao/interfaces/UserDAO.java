@@ -10,4 +10,6 @@ public interface UserDAO {
 
     List<User> fetchAllUsers();
 
+    void deleteUser(String username);
+
 }

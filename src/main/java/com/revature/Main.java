@@ -7,10 +7,15 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.revature.dao.AccountOperations;
+import com.revature.dao.UserOperations;
 import com.revature.exceptions.InvalidCredentialsException;
 import com.revature.models.*;
+import com.revature.services.AccountServices;
 import com.revature.services.MenuFunctions;
+import com.revature.services.UserServices;
 import com.revature.utils.BankSetup;
+import com.revature.utils.DatabaseAccess;
 import com.revature.utils.MenuPrinter;
 
 public class Main {
@@ -19,11 +24,13 @@ public class Main {
     static Scanner scan = new Scanner(System.in);
     static BufferedOutputStream out = new BufferedOutputStream(System.out);
     static MenuPrinter mp = new MenuPrinter(out);
+    static UserServices us = new UserServices(new UserOperations(DatabaseAccess.getConnection()));
+    static AccountServices as = new AccountServices(new AccountOperations(DatabaseAccess.getConnection()));
     static String[] userInfo = new String[2];
     static boolean exit = false;
     
-    static Bank bank = BankSetup.setupBank();
-    static MenuFunctions mf = new MenuFunctions(bank, mp, scan);
+    static Bank bank = new BankSetup(DatabaseAccess.getConnection()).setupBank();
+    static MenuFunctions mf = new MenuFunctions(bank, mp, scan, as, us);
 
     static String userChoice;
 

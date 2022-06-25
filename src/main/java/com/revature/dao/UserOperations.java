@@ -14,13 +14,21 @@ import com.revature.models.Admin;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
 import com.revature.models.User;
-import com.revature.utils.DatabaseAccess;
+import com.revature.services.AccountServices;
 
 public class UserOperations implements UserDAO {
 
+    private Connection conn;
+    private AccountServices as;
+
+    public UserOperations(Connection conn) {
+        this.conn = conn;
+        this.as = new AccountServices(new AccountOperations(conn));
+    }
+
     @Override
     public String insertUser(User user, String type) {
-        try (Connection conn = DatabaseAccess.getConnection()) {
+        try {
             String sql = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING users.username";
             PreparedStatement stmt = conn.prepareStatement(sql);
             
@@ -47,7 +55,7 @@ public class UserOperations implements UserDAO {
     
     @Override
     public List<User> fetchAllUsers() {
-        try (Connection conn = DatabaseAccess.getConnection()) {
+        try {
             List<User> fetched = new ArrayList<>();
             Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM users";
@@ -58,13 +66,13 @@ public class UserOperations implements UserDAO {
                 String type = res.getString("usertype");
                 switch(type) {
                     case "Customer":
-                        user = new Customer(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(6));
+                        user = new Customer(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(6), as);
                         break;
                     case "Employee":
-                        user = new Employee(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(6));
+                        user = new Employee(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(6), as);
                         break;
                     case "Admin":
-                        user = new Admin(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(6));
+                        user = new Admin(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(6), as);
                         break;
                 }
                 fetched.add(user);
@@ -73,6 +81,19 @@ public class UserOperations implements UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public void deleteUser(String username) {
+        try {
+            String sql = "DELETE FROM users WHERE username = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

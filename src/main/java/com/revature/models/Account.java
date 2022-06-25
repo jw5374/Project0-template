@@ -12,7 +12,6 @@ public class Account {
     private boolean pending = true;
     private double balance;
     private List<String> attachedUsernames = new ArrayList<>();
-    private List<Customer> attachedUsers = new ArrayList<>();
 
     public Account() {
         this.isJoint = false;
@@ -90,20 +89,7 @@ public class Account {
         this.attachedUsernames = attachedUsernames;
     }
 
-    public List<Customer> getAttachedUsers() {
-        return attachedUsers;
-    }
-    
-    public User getAttachedUser(int index) {
-        return attachedUsers.get(index);
-    }
-
-    public void setAttachedUsers(List<Customer> attachedUsers) {
-        this.attachedUsers = attachedUsers;
-    }
-    
     public void addAttachedUser(Customer user) {
-        this.attachedUsers.add(user);
         this.attachedUsernames.add(user.getUsername());
     }
 
@@ -137,12 +123,13 @@ public class Account {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((attachedUsers == null) ? 0 : attachedUsers.hashCode());
+        result = prime * result + ((attachedUsernames == null) ? 0 : attachedUsernames.hashCode());
         long temp;
         temp = Double.doubleToLongBits(balance);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + id;
         result = prime * result + (isJoint ? 1231 : 1237);
+        result = prime * result + (pending ? 1231 : 1237);
         return result;
     }
 
@@ -155,16 +142,18 @@ public class Account {
         if (getClass() != obj.getClass())
             return false;
         Account other = (Account) obj;
-        if (attachedUsers == null) {
-            if (other.attachedUsers != null)
+        if (attachedUsernames == null) {
+            if (other.attachedUsernames != null)
                 return false;
-        } else if (!attachedUsers.equals(other.attachedUsers))
+        } else if (!attachedUsernames.equals(other.attachedUsernames))
             return false;
         if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance))
             return false;
         if (id != other.id)
             return false;
         if (isJoint != other.isJoint)
+            return false;
+        if (pending != other.pending)
             return false;
         return true;
     }

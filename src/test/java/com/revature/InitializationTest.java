@@ -21,18 +21,28 @@ public class InitializationTest extends TestBankFuncsSetup {
         StringBuffer sb = new StringBuffer();
         sb.append("--------------------------------------------------------------------------------\n");
         sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", "Username", "First Name", "Last Name", "Email", "Phone"));
-        sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", "john2", "John", "Thomas", "jt@email.com", "9876543210"));
+        sb.append(String.format("| %-15s | %-15s | %-15s | %-25s | %-15s |\n", "test3", "jane", "smith", "email3@email.com", "1234567892"));
         Assert.assertEquals(sb.toString(), bank.getBankCustomer(1).toString());
     }
 
     @Test
     public void employeeInfo() {
-        Assert.assertEquals("jane1", bank.getBankUser("jane1").getUsername());
+        Assert.assertEquals("test2", bank.getBankUser("test2").getUsername());
+        Assert.assertEquals("password", bank.getBankUser("test2").getPassword());
+        Assert.assertEquals("john", bank.getBankUser("test2").getFirstname());
+        Assert.assertEquals("wayne", bank.getBankUser("test2").getLastname());
+        Assert.assertEquals("email2@email.com", bank.getBankUser("test2").getEmail());
+        Assert.assertEquals("1234567891", bank.getBankUser("test2").getPhone());
     }
 
     @Test
     public void adminInfo() {
-        Assert.assertEquals("james1", bank.getBankUser("james1").getUsername());
+        Assert.assertEquals("testadmin", bank.getBankUser("testadmin").getUsername());
+        Assert.assertEquals("password", bank.getBankUser("testadmin").getPassword());
+        Assert.assertEquals("james", bank.getBankUser("testadmin").getFirstname());
+        Assert.assertEquals("rutherford", bank.getBankUser("testadmin").getLastname());
+        Assert.assertEquals("email3@email.com", bank.getBankUser("testadmin").getEmail());
+        Assert.assertEquals("1234567893", bank.getBankUser("testadmin").getPhone());
     }
 
     @Test
@@ -42,7 +52,7 @@ public class InitializationTest extends TestBankFuncsSetup {
     
     @Test
     public void initialApprovedAccounts() {
-        Assert.assertEquals(0, bank.getApprovedAccs().size());
+        Assert.assertEquals(1, bank.getApprovedAccs().size());
     }
     
 }

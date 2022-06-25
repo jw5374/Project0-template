@@ -1,29 +1,51 @@
 package com.revature;
 
 import org.junit.Before;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import org.junit.After;
 
-import com.revature.models.Customer;
-import com.revature.models.Employee;
-import com.revature.models.Admin;
+import com.revature.services.AccountServices;
+import com.revature.services.UserServices;
+import com.revature.utils.BankSetup;
+import com.revature.dao.AccountOperations;
+import com.revature.dao.UserOperations;
 import com.revature.models.Bank;
 
 public class TestBankFuncsSetup {
     
+    static BankSetup bset;
     static Bank bank;
+    static UserServices us;
+    static AccountServices as;
+    static Connection conn;
 
     @Before
     public void newbank() {
-        bank = new Bank();
-        bank.addBankUser("john1", new Customer("john1", "bfdhsa", "John", "Smith", "js@email.com", "2345678910"));
-        bank.addBankUser("john2", new Customer("john2", "bfdhsa", "John", "Thomas", "jt@email.com", "9876543210"));
-        bank.addBankUser("jane1", new Employee("jane1", "bfdhsa"));
-        bank.addBankUser("james1", new Admin("james1", "bfdhsa"));
+        try {
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
+            bset = new BankSetup(conn);
+            conn.setSchema("Banking");
+            us = new UserServices(new UserOperations(conn));
+            as = new AccountServices(new AccountOperations(conn));
+            bank = bset.setupBank();
+        } catch (SQLException e) {/* ignored */}
     }
 
     @After
     public void clear() {
-        bank = null;
+        try {
+            bank = null;
+            bset = null;
+            us = null;
+            as = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {}
+        
     }
 
 }

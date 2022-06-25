@@ -12,14 +12,19 @@ public class Employee extends User {
         super(username, password);
     }
 
-    public Employee(String username, String password, String firstname, String lastname, String email, String phone) {
-        super(username, password, firstname, lastname, email, phone);
+    // public Employee(String username, String password, String firstname, String lastname, String email, String phone) {
+    //     super(username, password, firstname, lastname, email, phone);
+    // }
+
+    public Employee(String username, String password, String firstname, String lastname, String email, String phone,
+            AccountServices as) {
+        super(username, password, firstname, lastname, email, phone, as);
     }
 
     public void approveAcc(Bank bank, int accIndex) {
         Account approved = bank.popPending(accIndex);
         approved.setPending(false);
-        AccountServices.updateAccount(approved);
+        getAs().updateAccount(approved);
         logger.info(getUsername() + " has approved the account with id: " + approved.getId());
         for(String user : approved.getAttachedUsernames()) {
             Customer cust = (Customer) bank.getBankUser(user);
@@ -31,7 +36,7 @@ public class Employee extends User {
     
     public void denyAcc(Bank bank, int accIndex) {
         int id = bank.popPending(accIndex).getId();
-        AccountServices.deleteAccount(id);
+        getAs().deleteAccount(id);
         logger.info(getUsername() + " has denied the account with id: " + id);
     }
     

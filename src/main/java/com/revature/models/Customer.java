@@ -15,8 +15,13 @@ public class Customer extends User {
     private static Logger logger = LogManager.getLogger(Customer.class);
     private List<Account> openAccounts = new ArrayList<>();
 
-    public Customer(String username, String password, String firstname, String lastname, String email, String phone) {
-        super(username, password, firstname, lastname, email, phone);
+    // public Customer(String username, String password, String firstname, String lastname, String email, String phone) {
+    //     super(username, password, firstname, lastname, email, phone);
+    // }
+
+    public Customer(String username, String password, String firstname, String lastname, String email, String phone,
+            AccountServices as) {
+        super(username, password, firstname, lastname, email, phone, as);
     }
 
     public void transferFunds(int first, int second, double amt) {
@@ -51,7 +56,7 @@ public class Customer extends User {
 
     public void applyAccount(Bank bank) {
         Account applying = new Account(this);
-        int id = AccountServices.insertNewAccount(applying);
+        int id = getAs().insertNewAccount(applying);
         applying.setId(id);
         bank.addPendingAccs(applying);
         logger.info(getUsername() +  " has applied for an account with id: " + applying.getId());
@@ -59,7 +64,7 @@ public class Customer extends User {
 
     public void applyAccount(Bank bank, boolean joint, double balance) {
         Account applying = new Account(joint, balance, this);
-        int id = AccountServices.insertNewAccount(applying);
+        int id = getAs().insertNewAccount(applying);
         applying.setId(id);
         bank.addPendingAccs(applying);
         logger.info(getUsername() +  " has applied for an account with id: " + applying.getId());
