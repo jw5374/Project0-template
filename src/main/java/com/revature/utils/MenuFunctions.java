@@ -1,4 +1,4 @@
-package com.revature.services;
+package com.revature.utils;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
@@ -14,7 +14,8 @@ import com.revature.exceptions.InvalidFundsException;
 import com.revature.exceptions.UserAlreadyExistsException;
 import com.revature.exceptions.UserDoesNotExistException;
 import com.revature.models.*;
-import com.revature.utils.MenuPrinter;
+import com.revature.services.AccountServices;
+import com.revature.services.UserServices;
 
 public class MenuFunctions {
 

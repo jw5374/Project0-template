@@ -2,6 +2,8 @@ package com.revature;
 
 import org.junit.Test;
 
+import com.revature.exceptions.UserDoesNotExistException;
+
 import org.junit.Assert;
 
 public class InitializationTest extends TestBankFuncsSetup {
@@ -53,6 +55,11 @@ public class InitializationTest extends TestBankFuncsSetup {
     @Test
     public void initialApprovedAccounts() {
         Assert.assertEquals(1, bank.getApprovedAccs().size());
+    }
+
+    @Test(expected = UserDoesNotExistException.class)
+    public void noUser() {
+        bank.getBankUser("bob");
     }
     
 }

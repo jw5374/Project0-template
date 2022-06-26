@@ -12,10 +12,10 @@ import com.revature.dao.UserOperations;
 import com.revature.exceptions.InvalidCredentialsException;
 import com.revature.models.*;
 import com.revature.services.AccountServices;
-import com.revature.services.MenuFunctions;
 import com.revature.services.UserServices;
 import com.revature.utils.BankSetup;
 import com.revature.utils.DatabaseAccess;
+import com.revature.utils.MenuFunctions;
 import com.revature.utils.MenuPrinter;
 
 public class Main {
