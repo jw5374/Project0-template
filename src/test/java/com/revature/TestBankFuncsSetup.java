@@ -45,7 +45,6 @@ public class TestBankFuncsSetup {
             conn.close();
             conn = null;
         } catch (SQLException e) {}
-        
     }
 
 }

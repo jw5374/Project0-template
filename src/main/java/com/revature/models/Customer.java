@@ -15,10 +15,6 @@ public class Customer extends User {
     private static Logger logger = LogManager.getLogger(Customer.class);
     private List<Account> openAccounts = new ArrayList<>();
 
-    // public Customer(String username, String password, String firstname, String lastname, String email, String phone) {
-    //     super(username, password, firstname, lastname, email, phone);
-    // }
-
     public Customer(String username, String password, String firstname, String lastname, String email, String phone,
             AccountServices as) {
         super(username, password, firstname, lastname, email, phone, as);

@@ -12,10 +12,6 @@ public class Employee extends User {
         super(username, password);
     }
 
-    // public Employee(String username, String password, String firstname, String lastname, String email, String phone) {
-    //     super(username, password, firstname, lastname, email, phone);
-    // }
-
     public Employee(String username, String password, String firstname, String lastname, String email, String phone,
             AccountServices as) {
         super(username, password, firstname, lastname, email, phone, as);
