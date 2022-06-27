@@ -3,9 +3,12 @@ package com.revature;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.revature.exceptions.InvalidUserTypeException;
 import com.revature.exceptions.UserAlreadyExistsException;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
+import com.revature.models.User;
+import com.revature.utils.UserFactory;
 
 public class UserRegistrationTest extends TestBankFuncsSetup {
     
@@ -38,6 +41,25 @@ public class UserRegistrationTest extends TestBankFuncsSetup {
         us.removeUser("jane2");
         Assert.assertEquals(2, bank.getBankCustomers().size());
         Assert.assertEquals(4, bank.getBankUsers().size());
+    }
+
+    @Test
+    public void userFactoryUse() {
+        User factoryget = UserFactory.getNewUser("customer", "test1", "password", "john", "smith", "email@email.com", "1234567890", as);
+        User factorygetempl = UserFactory.getNewUser("employee", "test2", "password", "john", "smith", "email@email.com", "1234567890", as);
+        User factorygetadm = UserFactory.getNewUser("admin", "test3", "password", "john", "smith", "email@email.com", "1234567890", as);
+
+        Assert.assertEquals("test1", factoryget.getUsername());
+        Assert.assertEquals("test2", factorygetempl.getUsername());
+        Assert.assertEquals("test3", factorygetadm.getUsername());
+        Assert.assertEquals("Customer", factoryget.getClass().getSimpleName());
+        Assert.assertEquals("Employee", factorygetempl.getClass().getSimpleName());
+        Assert.assertEquals("Admin", factorygetadm.getClass().getSimpleName());
+    }
+
+    @Test(expected = InvalidUserTypeException.class)
+    public void invalidUserTypeFactory() {
+        UserFactory.getNewUser("something", "test1", "password", "john", "smith", "email@email.com", "1234567890", as);
     }
 
     @Test(expected = UserAlreadyExistsException.class)

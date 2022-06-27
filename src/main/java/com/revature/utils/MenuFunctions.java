@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import com.revature.exceptions.InsufficientFundsException;
 import com.revature.exceptions.InvalidCredentialsException;
 import com.revature.exceptions.InvalidFundsException;
+import com.revature.exceptions.InvalidUserTypeException;
 import com.revature.exceptions.UserAlreadyExistsException;
 import com.revature.exceptions.UserDoesNotExistException;
 import com.revature.models.*;
@@ -78,31 +79,16 @@ public class MenuFunctions {
         System.out.print("Please enter the account type you're registering for ('Customer', 'Employee', 'Admin'): ");
         typename = scan.next().toLowerCase();
         while(true) {
-            switch(typename) {
-                case "customer":
-                    user = new Customer(uname, passw, firstn, lastn, email, phone, as);
-                    us.insertNewUser(user);
-                    bank.addBankUser(uname, user);
-                    result[0] = "Customer";
-                    break;
-                case "employee":
-                    user = new Employee(uname, passw, firstn, lastn, email, phone, as);
-                    us.insertNewUser(user);
-                    bank.addBankUser(uname, user);
-                    result[0] = "Employee";
-                    break;
-                case "admin":
-                    user = new Admin(uname, passw, firstn, lastn, email, phone, as);
-                    us.insertNewUser(user);
-                    bank.addBankUser(uname, user);
-                    result[0] = "Admin";
-                    break;
-                default:
-                    System.out.println("That is not a valid account type: " + typename);
-                    typename = scan.next().toLowerCase();
-                    continue;
+            try {
+                user = UserFactory.getNewUser(typename, uname, passw, firstn, lastn, email, phone, as);
+                us.insertNewUser(user);
+                bank.addBankUser(uname, user);
+                result[0] = user.getClass().getSimpleName();
+                break;
+            } catch (InvalidUserTypeException e) {
+                System.out.print(e.getMessage() + " Please try again: ");
+                typename = scan.next().toLowerCase();
             }
-            break;
         }
 
         result[1] = uname;
