@@ -1,5 +1,6 @@
 package com.revature.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,8 +45,11 @@ public class UserOperations implements UserDAO {
             if(res != null) {
                 res.next();
                 String usern = res.getString("username");
+                res.close();
+                stmt.close();
                 return usern;
             }
+            stmt.close();
             return null;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,6 +81,8 @@ public class UserOperations implements UserDAO {
                 }
                 fetched.add(user);
             }
+            res.close();
+            stmt.close();
             return fetched;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,11 +93,12 @@ public class UserOperations implements UserDAO {
     @Override
     public void deleteUser(String username) {
         try {
-            String sql = "DELETE FROM users WHERE username = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            String sql = "call delete_user(cast(? as varchar))";
+            CallableStatement stmt = conn.prepareCall(sql);
             
             stmt.setString(1, username);
-            stmt.executeUpdate();
+            stmt.execute();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

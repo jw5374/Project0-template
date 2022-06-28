@@ -1,6 +1,7 @@
 package com.revature.dao;
 
 import java.sql.Array;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,8 +38,11 @@ public class AccountOperations implements AccountDAO {
             if(res != null) {
                 res.next();
                 int id = res.getInt("id");
+                res.close();
+                stmt.close();
                 return id;
             }
+            stmt.close();
             return -1;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,6 +73,8 @@ public class AccountOperations implements AccountDAO {
                 acc.setAttachedUsernames(new ArrayList<String>(Arrays.asList(attachednames)));
                 result.add(acc);
             }
+            res.close();
+            stmt.close();
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -91,7 +97,7 @@ public class AccountOperations implements AccountDAO {
             stmt.setBoolean(4, acc.isPending());
             stmt.setInt(5, acc.getId());
             stmt.executeUpdate();
-
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,14 +106,12 @@ public class AccountOperations implements AccountDAO {
     @Override
     public void deleteAccount(int accId) {
         try {
-            
-            String sql = "DELETE FROM accounts WHERE id = ?";
-            
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            String sql = "call delete_account(?)";
+            CallableStatement stmt = conn.prepareCall(sql);
 
             stmt.setInt(1, accId);
-            stmt.executeUpdate();
-
+            stmt.execute();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
